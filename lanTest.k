@@ -35,8 +35,8 @@ module IMP
 					<env> .Map </env>
 					<store> .Map </store>
 					<stream>
-					<in> .List </in>
-					<out> .List </out>
+						<in> .List </in>
+						<out> .List </out>
 					</stream>
 				</T>
 
@@ -69,5 +69,11 @@ module IMP
 	  
 	rule <k> X =I:Int => I ...</k>
 		<env>... X|-> N ...</env>
-		<store>... N|-> (_ =>I) ...</store>		 //_ variabile anonima	  
+		<store>... N|-> (_ =>I) ...</store>		 //_ variabile anonima	
+
+//if/while stmt
+	rule if (true) A else _ => A
+	rule if (false) _ else A => A
+	rule while (B) A => if (B) {A while (B) A} else {} 		[structural]
+	
 endmodule
