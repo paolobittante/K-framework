@@ -18,9 +18,9 @@ module IMP-SYNTAX
 	syntax Stmt ::= Block
 					| Exp1 ";"
 					| "if" "(" Exp2 ")" Block "else" Block		[strict(1)]
-					| "while" "(" Exp2 ")" Block				[strict(1)]
-					| "print" "(" Exp1s ")" ";"					[strict]
-					| Exp2 "?" Exp1 ":" Exp1					[strict(1)]		
+					| "while" "(" Exp2 ")" Block			[strict(1)]
+					| "print" "(" Exp1s ")" ";"			[strict]
+					| Exp2 "?" Exp1 ":" Exp1			[strict(1)]		
 
 	syntax Exp1s ::= List{Exp1,","}
 	syntax Stms ::= List{Stmt,""}
