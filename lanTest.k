@@ -11,7 +11,10 @@ module IMP-SYNTAX
 					| Id "=" Exp2				[strict(2)]
 					| "(" Exp1 ")" 				[bracket]					
 	syntax Exp2 ::= Bool
-					| Exp1 "<=" Exp1			[seqstrict]					
+					| Exp1 "<=" Exp1			[seqstrict]
+					| Exp1 ">=" Exp1			[seqstrict]
+					| Exp1 "<" Exp1				[seqstrict]
+					| Exp1 ">" Exp1				[seqstrict]
 					| "(" Exp2 ")" 				[bracket]					
 	syntax Block ::= "{" "}"
 					| "{" Stmts "}"	
@@ -40,25 +43,31 @@ module IMP
 					</stream>
 				</T>
 
+	//lookup rule
+	rule <k> S:Id => I:Int ...</k> <env>... S |-> N ...</env> <store> ... N|-> I ...</store>	  
 	
-	rule <k> S:Id => I:Int ...</k> <env>... S |-> N ...</env> <store> ... N|-> I ...</store>	//lookup rule ???  
-	rule <k> S:Id => I:Bool ...</k> <env>... S |-> N ...</env> <store> ... N|-> I ...</store>
-	
+	// read rule
 	rule <k> read() => I </k>
-		<in> ListItem(I:Int) => .List ...</in>		[read]
+		<in> ListItem(I:Int) => .List ...</in>		
 		
-//Exp1	  
+	//Exp1	  
 	rule I1 / I2 => I1 /Int I2 		when I2 =/=Int 0
 	rule I1 * I2 => I1 *Int I2
 	rule I1 - I2 => I1 -Int I2
 	rule I1 + I2 => I1 +Int I2
 	  
-
-//Exp2
+	//Exp2
 	rule B1 <= B2 => B1 <=Int B2
+	rule B1 >= B2 => B1 >=Int B2
+	rule B1 < B2 => B1 <Int B2
+	rule B1 < B2 => B1 <Int B2
 
-//Block
-	//rule <k> {}
+	//Block
+	rule {} => . 	[structural]
+	rule <k> {S} => S ~> env(Rho) ...</k> <env> Rho </env> [structural]
+	syntax K ::= env(Map)	
+	// rule ripristino ambiente, quando raggiunge env(Rho) sostiuisce l'attuale ambiente con quello vecchio
+	rule <k> env(Rho) => . ...</k> <env> _ => Rho </env> 	[structural]
 	
 	/*assegnamento
 	rule <k> int (X,Xs => Xs); ... </k>			
@@ -67,11 +76,12 @@ module IMP
 	  when fresh(N:Nat)
 	  */
 	  
+	// assegnamento  
 	rule <k> X =I:Int => I ...</k>
 		<env>... X|-> N ...</env>
-		<store>... N|-> (_ =>I) ...</store>		 //_ variabile anonima	
+		<store>... N|-> (_ =>I) ...</store>		 
 		
-//if/while stmt
+	//if/while stmt
 	rule if (true) A else _ => A
 	rule if (false) _ else A => A
 	rule while (B) A => if (B) {A while (B) A} else {} 		[structural]
