@@ -1,6 +1,6 @@
 //Linguaggio esercizio 1
 
-module IMP-SYNTAX
+module LTEST-SYNTAX
 	syntax Exp1 ::= Int | Id
 					| "read" "(" ")"
 					> Exp1 "/" Exp1				[left,strict,division]
@@ -25,14 +25,18 @@ module IMP-SYNTAX
 					| "print" "(" Exp1s ")" ";"			[strict]
 					| Exp2 "?" Exp1 ":" Exp1			[strict(1)]		
 
-	syntax Exp1s ::= List{Exp1,","}
-	syntax Stms ::= List{Stmt,""}
+	syntax Exp1s ::= List{Exp1,","}				[strict]
+	syntax Stmts ::= List{Stmt,""}				[seqstrict]
 endmodule
 
-module IMP
-	imports IMP-SYNTAX	
+module LTEST
+	imports LTEST-SYNTAX	
 	syntax KResult ::= Int | Bool 
 	
+	// Divido lo stato del programma in un 'environment' e uno 'store'
+	// l'environment mapperà i nomi delle variabili alle rispettive locazioni,
+	// lo store mapperà locazioni ai valori.
+		
 	configuration <T>
 					<k>  $PGM:Stmts </k>		//inizializzo la k cell con il programma passato a krun
 					<env> .Map </env>
@@ -60,7 +64,7 @@ module IMP
 	rule B1 <= B2 => B1 <=Int B2
 	rule B1 >= B2 => B1 >=Int B2
 	rule B1 < B2 => B1 <Int B2
-	rule B1 < B2 => B1 <Int B2
+	rule B1 > B2 => B1 >Int B2
 
 	//Block
 	rule {} => . 	[structural]
@@ -78,8 +82,8 @@ module IMP
 	  
 	// assegnamento  
 	rule <k> X =I:Int => I ...</k>
-		<env>... X|-> N ...</env>
-		<store>... N|-> (_ =>I) ...</store>		 
+		<env>... X|-> N ...</env>			when notBool (X in keys(Env))		//controllo che la variabile X non sia già nell'ambiente
+		<store>... N|-> (_ =>I) ...</store>		 	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
 		
 	//if/while stmt
 	rule if (true) A else _ => A
