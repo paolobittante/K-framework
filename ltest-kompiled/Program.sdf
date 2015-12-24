@@ -10,41 +10,41 @@ context-free priorities
     Int -> Exp1 {}
     Id -> Exp1 {}
 } > {
-    Exp1 "/" Exp1 -> Exp1 {left, cons("Exp11380Syn")}
-    Exp1 "*" Exp1 -> Exp1 {left, cons("Exp11258Syn")}
+    Exp1 "/" Exp1 -> Exp1 {left, cons("Exp11442Syn")}
+    Exp1 "*" Exp1 -> Exp1 {left, cons("Exp11443Syn")}
 } > {
-    Exp1 "+" Exp1 -> Exp1 {left, cons("Exp11204Syn")}
-    Exp1 "-" Exp1 -> Exp1 {left, cons("Exp11402Syn")}
+    Exp1 "+" Exp1 -> Exp1 {left, cons("Exp11444Syn")}
+    Exp1 "-" Exp1 -> Exp1 {left, cons("Exp11445Syn")}
 }
 
 context-free start-symbols
 DzString DzBool Stmts String Int Stmt Float Exp2 Bool Exp1 Block Id Exp1s DzInt DzFloat K
 context-free syntax
-    Exp2 "?" InsertDzExp1 ":" Exp1 -> Stmt {cons("Stmt13Syn")}
-    Id "=" InsertDzExp1 ";" -> Stmt {cons("Stmt165Syn")}
-    DzString -> String {}
-    {Stmt ""}* -> Stmts {cons("Stmts1ListSyn")}
-    Exp1 "<" Exp1 -> Exp2 {cons("Exp21443Syn")}
     DzInt -> Int {}
-    "(" InsertDzExp2 ")" -> Exp2 {cons("Exp21Bracket")}
-    Exp1 ">=" Exp1 -> Exp2 {cons("Exp21288Syn")}
-    "print" "(" InsertDzExp1 ")" ";" -> Stmt {cons("Stmt1340Syn")}
-    Exp1 "==" Exp1 -> Exp2 {cons("Exp2124Syn")}
-    DzFloat -> Float {}
-    "while" "(" InsertDzExp2 ")" Block -> Stmt {cons("Stmt1292Syn")}
-    "{" "}" -> Block {cons("Block1496Syn")}
-    {Exp1 ","}* -> Exp1s {cons("Exp1s1ListSyn")}
+    Exp2 "?" InsertDzExp1 ":" Exp1 -> Stmt {cons("Stmt1458Syn")}
+    Exp1 ">" Exp1 -> Exp2 {cons("Exp21449Syn")}
+    Exp1 "<" Exp1 -> Exp2 {cons("Exp21448Syn")}
     DzBool -> Bool {}
-    "{" InsertDzStmts "}" -> Block {cons("Block1462Syn")}
-    "read" "(" ")" -> Exp1 {cons("Exp11400Syn")}
-    Block -> Stmt {}
-    Exp1 ">" Exp1 -> Exp2 {cons("Exp2188Syn")}
+    {Stmt ""}* -> Stmts {cons("Stmts1ListSyn")}
+    Exp1 "<=" Exp1 -> Exp2 {cons("Exp21446Syn")}
+    "print" "(" InsertDzExp1 ")" ";" -> Stmt {cons("Stmt1457Syn")}
     Bool -> Exp2 {}
-    Id "=" InsertDzExp2 ";" -> Stmt {cons("Stmt1466Syn")}
-    Exp1 ";" -> Stmt {cons("Stmt152Syn")}
-    "if" "(" InsertDzExp2 ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1522Syn")}
-    Exp1 "<=" Exp1 -> Exp2 {cons("Exp21324Syn")}
+    Exp1 ">=" Exp1 -> Exp2 {cons("Exp21447Syn")}
+    "if" "(" InsertDzExp2 ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1455Syn")}
+    DzFloat -> Float {}
+    Id "=" InsertDzExp1 ";" -> Stmt {cons("Stmt1459Syn")}
+    Block -> Stmt {}
+    DzString -> String {}
+    "{" InsertDzStmts "}" -> Block {cons("Block1453Syn")}
+    "read" "(" ")" -> Exp1 {cons("Exp11440Syn")}
+    "{" "}" -> Block {cons("Block1452Syn")}
+    "while" "(" InsertDzExp2 ")" Block -> Stmt {cons("Stmt1456Syn")}
+    Id "=" InsertDzExp2 ";" -> Stmt {cons("Stmt1460Syn")}
+    "(" InsertDzExp2 ")" -> Exp2 {cons("Exp21Bracket")}
+    {Exp1 ","}* -> Exp1s {cons("Exp1s1ListSyn")}
     "(" InsertDzExp1 ")" -> Exp1 {cons("Exp11Bracket")}
+    Exp1 "==" Exp1 -> Exp2 {cons("Exp21450Syn")}
+    Exp1 ";" -> Stmt {cons("Stmt1454Syn")}
     Stmts -> InsertDzStmts
     Exp2 -> InsertDzExp2
     Exp1 -> InsertDzExp1
@@ -75,18 +75,14 @@ context-free syntax
     DzInt        -> K
     DzFloat        -> K
 lexical syntax
-    "Infinity" -> DzDzFloat
-    "true" -> DzDzBool
     "false" -> DzDzBool
-    "NaN" -> DzDzFloat
+    "true" -> DzDzBool
 
 
     "while" -> IdDz {reject}
     "else" -> IdDz {reject}
-    "NaN" -> IdDz {reject}
     "if" -> IdDz {reject}
     "read" -> IdDz {reject}
-    "Infinity" -> IdDz {reject}
     "false" -> IdDz {reject}
     "print" -> IdDz {reject}
     "true" -> IdDz {reject}
@@ -97,22 +93,109 @@ lexical restrictions
 
 lexical syntax
     [A-Za-z\_][A-Za-z0-9\_]* -> IdDz
+    [\-\+]?[0-9]+ -> DzIntDz
+    [\+\-]?[0-9]+"."[0-9]+([eE][\+\-]?[0-9]+)?[fFdD]? -> DzFloatDz
+    "\"" ((~[\"\n\r\\])|(((([\\][nrtf\"\\])|([\\][x][0-9a-fA-F][0-9a-fA-F]))|([\\][u][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]))|([\\][U][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])))*"\"" -> DzStringDz
+    "<=" -> DzStringDz {reject}
+    "while" -> DzStringDz {reject}
+    "else" -> DzStringDz {reject}
+    "if" -> DzStringDz {reject}
+    "==" -> DzStringDz {reject}
+    "read" -> DzStringDz {reject}
+    "false" -> DzStringDz {reject}
+    "(" -> DzStringDz {reject}
+    ")" -> DzStringDz {reject}
+    "*" -> DzStringDz {reject}
+    "+" -> DzStringDz {reject}
+    "," -> DzStringDz {reject}
+    "-" -> DzStringDz {reject}
+    "/" -> DzStringDz {reject}
+    "print" -> DzStringDz {reject}
+    "true" -> DzStringDz {reject}
+    ":" -> DzStringDz {reject}
+    "{" -> DzStringDz {reject}
+    ";" -> DzStringDz {reject}
+    "<" -> DzStringDz {reject}
+    "}" -> DzStringDz {reject}
+    "=" -> DzStringDz {reject}
+    ">" -> DzStringDz {reject}
+    ">=" -> DzStringDz {reject}
+    "?" -> DzStringDz {reject}
+    "<=" -> IdDz {reject}
     "while" -> IdDz {reject}
     "else" -> IdDz {reject}
-    "NaN" -> IdDz {reject}
     "if" -> IdDz {reject}
+    "==" -> IdDz {reject}
     "read" -> IdDz {reject}
-    "Infinity" -> IdDz {reject}
     "false" -> IdDz {reject}
+    "(" -> IdDz {reject}
+    ")" -> IdDz {reject}
+    "*" -> IdDz {reject}
+    "+" -> IdDz {reject}
+    "," -> IdDz {reject}
+    "-" -> IdDz {reject}
+    "/" -> IdDz {reject}
     "print" -> IdDz {reject}
     "true" -> IdDz {reject}
-    [\-\+]? [0-9]+ -> DzIntDz
-    [\+\-]?[0-9]+"."[0-9]+([eE][\+\-]?[0-9]+)?([fFdD]|([pP][0-9]+[xX][0-9]+))? -> DzFloatDz
-    [\+\-]?"Infinity"([fFdD]|([pP][0-9]+[xX][0-9]+))? -> DzFloatDz
-    "Infinity" -> DzFloatDz {reject}
-    "NaN"([fFdD]|([pP][0-9]+[xX][0-9]+))? -> DzFloatDz
-    "NaN" -> DzFloatDz {reject}
-    "\"" ((~[\"\n\r\\]) | (((([\\][nrtf\"\\]) | ([\\][x][0-9a-fA-F][0-9a-fA-F])) | ([\\][u][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])) | ([\\][U][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])))* "\"" -> DzStringDz
+    ":" -> IdDz {reject}
+    "{" -> IdDz {reject}
+    ";" -> IdDz {reject}
+    "<" -> IdDz {reject}
+    "}" -> IdDz {reject}
+    "=" -> IdDz {reject}
+    ">" -> IdDz {reject}
+    ">=" -> IdDz {reject}
+    "?" -> IdDz {reject}
+    "<=" -> DzIntDz {reject}
+    "while" -> DzIntDz {reject}
+    "else" -> DzIntDz {reject}
+    "if" -> DzIntDz {reject}
+    "==" -> DzIntDz {reject}
+    "read" -> DzIntDz {reject}
+    "false" -> DzIntDz {reject}
+    "(" -> DzIntDz {reject}
+    ")" -> DzIntDz {reject}
+    "*" -> DzIntDz {reject}
+    "+" -> DzIntDz {reject}
+    "," -> DzIntDz {reject}
+    "-" -> DzIntDz {reject}
+    "/" -> DzIntDz {reject}
+    "print" -> DzIntDz {reject}
+    "true" -> DzIntDz {reject}
+    ":" -> DzIntDz {reject}
+    "{" -> DzIntDz {reject}
+    ";" -> DzIntDz {reject}
+    "<" -> DzIntDz {reject}
+    "}" -> DzIntDz {reject}
+    "=" -> DzIntDz {reject}
+    ">" -> DzIntDz {reject}
+    ">=" -> DzIntDz {reject}
+    "?" -> DzIntDz {reject}
+    "<=" -> DzFloatDz {reject}
+    "while" -> DzFloatDz {reject}
+    "else" -> DzFloatDz {reject}
+    "if" -> DzFloatDz {reject}
+    "==" -> DzFloatDz {reject}
+    "read" -> DzFloatDz {reject}
+    "false" -> DzFloatDz {reject}
+    "(" -> DzFloatDz {reject}
+    ")" -> DzFloatDz {reject}
+    "*" -> DzFloatDz {reject}
+    "+" -> DzFloatDz {reject}
+    "," -> DzFloatDz {reject}
+    "-" -> DzFloatDz {reject}
+    "/" -> DzFloatDz {reject}
+    "print" -> DzFloatDz {reject}
+    "true" -> DzFloatDz {reject}
+    ":" -> DzFloatDz {reject}
+    "{" -> DzFloatDz {reject}
+    ";" -> DzFloatDz {reject}
+    "<" -> DzFloatDz {reject}
+    "}" -> DzFloatDz {reject}
+    "=" -> DzFloatDz {reject}
+    ">" -> DzFloatDz {reject}
+    ">=" -> DzFloatDz {reject}
+    "?" -> DzFloatDz {reject}
 context-free syntax
     DzStringDz -> DzString {cons("DzString1Const")}
     IdDz -> Id {cons("Id1Const")}
@@ -122,4 +205,4 @@ context-free syntax
 
 context-free restrictions
     Id -/- [A-Za-z0-9\_]
-    DzInt -/-  [0-9]
+    DzInt -/- [0-9]

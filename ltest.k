@@ -78,7 +78,7 @@ module LTEST
 	
 	//Block
 	rule {} => . 				
-	rule <k> {S} => S ~> env(Rho) ...</k> <env> Rho </env> [structural]
+	rule <k> {S:Stms} => S ~> env(Rho:Map) ...</k> <env> Rho </env> [structural]
 	rule S1:Stmt S2:Stmt => S1 ~> S2
 		
 	// rules ripristino ambiente
@@ -87,9 +87,9 @@ module LTEST
 	rule <k> env(Rho) => . ...</k> <env> _ => Rho </env> 	[structural]
 		  
 	// assegnamento  
-	rule <k> X =I:Int => I ...</k>
-		<env>... X|-> N ...</env>			when notBool (X in keys(Env))		//controllo che la variabile X non sia già nell'ambiente
-		<store>... N|-> (_ =>I) ...</store>		 	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
+	rule <k> X:Id =I:Int ; => I ...</k>
+		<env> Env:map => Env[N/X]</env>			when notBool (X in keys(Env))		//controllo che la variabile X non sia già nell'ambiente
+		<store>... N:Int |-> (_ =>I) ...</store>		 	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
 		
 	//if/while stmt
 	rule if (true) A else _ => A
