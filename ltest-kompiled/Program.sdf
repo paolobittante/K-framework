@@ -7,47 +7,47 @@ exports
 context-free syntax
 context-free priorities
 {
-    Int -> Exp1 {}
-    Id -> Exp1 {}
+    Int -> AExp {}
+    Id -> AExp {}
 } > {
-    Exp1 "/" Exp1 -> Exp1 {left, cons("Exp11380Syn")}
-    Exp1 "*" Exp1 -> Exp1 {left, cons("Exp11258Syn")}
+    AExp "/" AExp -> AExp {left, cons("AExp1528Syn")}
+    AExp "*" AExp -> AExp {left, cons("AExp1448Syn")}
 } > {
-    Exp1 "+" Exp1 -> Exp1 {left, cons("Exp11204Syn")}
-    Exp1 "-" Exp1 -> Exp1 {left, cons("Exp11402Syn")}
+    AExp "+" AExp -> AExp {left, cons("AExp165Syn")}
+    AExp "-" AExp -> AExp {left, cons("AExp137Syn")}
 }
 
 context-free start-symbols
-DzString DzBool Stmts String Int Stmt Float Exp2 Bool Exp1 Block Id Exp1s DzInt DzFloat K
+DzString DzBool AExp AExps Stmts BExp String Int Stmt Float Bool Block Id DzInt DzFloat K
 context-free syntax
-    Exp2 "?" InsertDzExp1 ":" Exp1 -> Stmt {cons("Stmt13Syn")}
-    Id "=" InsertDzExp1 ";" -> Stmt {cons("Stmt165Syn")}
+    "print" "(" InsertDzAExp ")" ";" -> Stmt {cons("Stmt12Syn")}
     DzString -> String {}
     {Stmt ""}* -> Stmts {cons("Stmts1ListSyn")}
-    Exp1 "<" Exp1 -> Exp2 {cons("Exp21443Syn")}
+    AExp ">" AExp -> BExp {cons("BExp167Syn")}
+    AExp "==" AExp -> BExp {cons("BExp16Syn")}
+    "while" "(" InsertDzBExp ")" Block -> Stmt {cons("Stmt1436Syn")}
+    Id "=" InsertDzBExp ";" -> Stmt {cons("Stmt168Syn")}
+    "(" InsertDzAExp ")" -> AExp {cons("AExp1Bracket")}
     DzInt -> Int {}
-    "(" InsertDzExp2 ")" -> Exp2 {cons("Exp21Bracket")}
-    Exp1 ">=" Exp1 -> Exp2 {cons("Exp21288Syn")}
-    "print" "(" InsertDzExp1 ")" ";" -> Stmt {cons("Stmt1340Syn")}
-    Exp1 "==" Exp1 -> Exp2 {cons("Exp2124Syn")}
     DzFloat -> Float {}
-    "while" "(" InsertDzExp2 ")" Block -> Stmt {cons("Stmt1292Syn")}
-    "{" "}" -> Block {cons("Block1496Syn")}
-    {Exp1 ","}* -> Exp1s {cons("Exp1s1ListSyn")}
+    Id "=" InsertDzAExp ";" -> Stmt {cons("Stmt1386Syn")}
+    "{" "}" -> Block {cons("Block1493Syn")}
+    AExp "<" AExp -> BExp {cons("BExp1242Syn")}
     DzBool -> Bool {}
-    "{" InsertDzStmts "}" -> Block {cons("Block1462Syn")}
-    "read" "(" ")" -> Exp1 {cons("Exp11400Syn")}
+    AExp ">=" AExp -> BExp {cons("BExp1456Syn")}
+    "{" InsertDzStmts "}" -> Block {cons("Block1459Syn")}
+    Bool -> BExp {}
     Block -> Stmt {}
-    Exp1 ">" Exp1 -> Exp2 {cons("Exp2188Syn")}
-    Bool -> Exp2 {}
-    Id "=" InsertDzExp2 ";" -> Stmt {cons("Stmt1466Syn")}
-    Exp1 ";" -> Stmt {cons("Stmt152Syn")}
-    "if" "(" InsertDzExp2 ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1522Syn")}
-    Exp1 "<=" Exp1 -> Exp2 {cons("Exp21324Syn")}
-    "(" InsertDzExp1 ")" -> Exp1 {cons("Exp11Bracket")}
+    "read" "(" ")" -> AExp {cons("AExp1508Syn")}
+    {AExp ","}* -> AExps {cons("AExps1ListSyn")}
+    AExp "<=" AExp -> BExp {cons("BExp1525Syn")}
+    "if" "(" InsertDzBExp ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1526Syn")}
+    AExp ";" -> Stmt {cons("Stmt1277Syn")}
+    BExp "?" InsertDzAExp ":" AExp -> Stmt {cons("Stmt1328Syn")}
+    "(" InsertDzBExp ")" -> BExp {cons("BExp1Bracket")}
+    AExp -> InsertDzAExp
     Stmts -> InsertDzStmts
-    Exp2 -> InsertDzExp2
-    Exp1 -> InsertDzExp1
+    BExp -> InsertDzBExp
     Block -> InsertDzBlock
 
 
@@ -63,13 +63,13 @@ context-free syntax
     KItem        -> K
     DzString        -> K
     DzBool        -> K
+    AExp        -> K
+    BExp        -> K
     String        -> K
     Int        -> K
     Stmt        -> K
     Float        -> K
-    Exp2        -> K
     Bool        -> K
-    Exp1        -> K
     Block        -> K
     Id        -> K
     DzInt        -> K

@@ -1,35 +1,35 @@
 //Linguaggio esercizio 1
 
 module LTEST-SYNTAX
-	syntax Exp1 ::= Int | Id
+	syntax AExp ::= Int | Id
 					| "read" "(" ")"
-					> Exp1 "/" Exp1				[left,strict]
-					| Exp1 "*" Exp1				[left,strict]
-					> Exp1 "+" Exp1				[left,strict]
-					| Exp1 "-" Exp1				[left,strict] 
-					| "(" Exp1 ")" 				[bracket]		
+					> AExp "/" AExp				[left,strict]
+					| AExp "*" AExp				[left,strict]
+					> AExp "+" AExp				[left,strict]
+					| AExp "-" AExp				[left,strict] 
+					| "(" AExp ")" 				[bracket]		
 					
-	syntax Exp2 ::= Bool
-					| Exp1 "<=" Exp1			[seqstrict]
-					| Exp1 ">=" Exp1			[seqstrict]
-					| Exp1 "<" Exp1				[seqstrict]
-					| Exp1 ">" Exp1				[seqstrict]
-					| Exp1 "==" Exp1			[seqstrict]
-					| "(" Exp2 ")" 				[bracket]	
+	syntax BExp ::= Bool
+					| AExp "<=" AExp			[seqstrict]
+					| AExp ">=" AExp			[seqstrict]
+					| AExp "<" AExp				[seqstrict]
+					| AExp ">" AExp				[seqstrict]
+					| AExp "==" AExp			[seqstrict]
+					| "(" BExp ")" 				[bracket]	
 					
 	syntax Block ::= "{" "}"
 					| "{" Stmts "}"	
 					
 	syntax Stmt ::= Block
-					| Exp1 ";"
-					| "if" "(" Exp2 ")" Block "else" Block		[strict(1)]
-					| "while" "(" Exp2 ")" Block			[strict(1)]
-					| "print" "(" Exp1 ")" ";"			[strict]
-					| Exp2 "?" Exp1 ":" Exp1			[strict(1)]		
-					| Id "=" Exp1 ";"				[strict(2)]
-					| Id "=" Exp2 ";"				[strict(2)]
+					| AExp ";"
+					| "if" "(" BExp ")" Block "else" Block		[strict(1)]
+					| "while" "(" BExp ")" Block			[strict(1)]
+					| "print" "(" AExp ")" ";"			[strict]
+					| BExp "?" AExp ":" AExp			[strict(1)]		
+					| Id "=" AExp ";"				[strict(2)]
+					| Id "=" BExp ";"				[strict(2)]
 
-	syntax Exp1s ::= List{Exp1,","}				[strict]
+	syntax AExps ::= List{AExp,","}				[strict]
 	syntax Stmts ::= List{Stmt,""}				[seqstrict]
 endmodule
 
@@ -57,19 +57,19 @@ module LTEST
 		<store> ... N|-> I ...</store>	  
 		
 	// read rule
-	rule <k> read() => I:Int </k>
+	rule <k> read() => I:Int ...</k>
 		<in> ListItem(I) => .List ...</in>	
 	// Output
-	// rule <k> print I:Exp1 ; => . </k>
-		// <out> . => ListItem(I) </out>
+	// rule <k> print I:Stmts => .  ...</k>
+		// <out>... . => ListItem(I) ...</out>
 		
-	//Exp1	  
+	//AExp	  
 	rule I1:Int / I2:Int => I1 /Int I2 		when I2 =/=Int 0
 	rule I1:Int * I2:Int => I1 *Int I2
 	rule I1:Int - I2:Int => I1 -Int I2
 	rule I1:Int + I2:Int => I1 +Int I2	  
 	
-	//Exp2
+	//BExp
 	rule B1:Int <= B2:Int => B1 <=Int B2
 	rule B1:Int >= B2:Int => B1 >=Int B2
 	rule B1:Int < B2:Int => B1 <Int B2
