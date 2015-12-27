@@ -1,0 +1,8 @@
+load "/cygdrive/C/Program Files/k3-4/lib/maude/lib/k-prelude"
+load "base.maude"
+load "builtins.maude"
+mod LTEST is 
+  including LTEST-BASE .
+  including LTEST-BUILTINS .
+eq mainModule = 'LTEST .
+endm

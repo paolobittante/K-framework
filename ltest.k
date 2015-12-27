@@ -60,8 +60,8 @@ module LTEST
 	rule <k> read() => I:Int ...</k>
 		<in> ListItem(I) => .List ...</in>	
 	// Output
-	// rule <k> print I:Stmts => .  ...</k>
-		// <out>... . => ListItem(I) ...</out>
+	rule <k> print (I) ; => I ; ...</k>
+		<out>... .List => ListItem(I:Int) </out>
 		
 	//AExp	  
 	rule I1:Int / I2:Int => I1 /Int I2 		when I2 =/=Int 0
@@ -78,18 +78,18 @@ module LTEST
 	
 	//Block
 	rule {} => . 				
-	rule <k> {S} => S ~> env(Rho) ...</k> <env> Rho </env> [structural]
+	// rule <k> {S} => S ~> env(Rho) ...</k> <env> Rho </env> [structural]
 	rule S1:Stmt S2:Stmt => S1 ~> S2
 		
 	// rules ripristino ambiente
-	rule env(_) ~> env(Rho) => env(Rho) [structural]
+	// rule env(_) ~> env(Rho) => env(Rho) [structural]
 	 // quando raggiunge env(Rho) sostiuisce l'attuale ambiente con quello vecchio
-	rule <k> env(Rho) => . ...</k> <env> _ => Rho </env> 	[structural]
+	// rule <k> env(Rho) => . ...</k> <env> _ => Rho </env> 	[structural]
 		  
 	// assegnamento  
-	rule <k> X =I:Int => I ...</k>
-		<env>... X|-> N ...</env>			when notBool (X in keys(Env))		//controllo che la variabile X non sia già nell'ambiente
-		<store>... N|-> (_ =>I) ...</store>		 	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
+	rule <k> X:Id =I:Int ; => I; ...</k>
+		<env> Env:Map => Env[N/X] </env>					//controllo che la variabile X non sia già nell'ambiente
+		<store> N|-> (_ =>I) </store>		 when notBool (X in keys(Env))	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
 		
 	//if/while stmt
 	rule if (true) A else _ => A
