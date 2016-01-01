@@ -77,9 +77,9 @@ module LTEST
 	rule B1:Int == B2:Int => B1 ==Int B2
 	
 	//Block
-	rule {} => . 				
-	// rule <k> {S} => S ~> env(Rho) ...</k> <env> Rho </env> [structural]
-	rule S1:Stmt S2:Stmt => S1 ~> S2
+	rule {} => . 		
+	// rule <k> {S:Stmt} => S ~> env(Rho:Map) ...</k> <env> Rho </env> [structural]
+	rule S1:Stmt S2:Stmt  => S1 ~> S2		[structural]
 		
 	// rules ripristino ambiente
 	// rule env(_) ~> env(Rho) => env(Rho) [structural]
