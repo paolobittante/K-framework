@@ -89,7 +89,7 @@ module LTEST
 	// assegnamento  
 	rule <k> X:Id =I:Int ; => I; ...</k>
 		<env> Env:Map => Env[N/X] </env>					//controllo che la variabile X non sia già nell'ambiente
-		<store> N|-> (_ =>I) </store>		 when notBool (X in keys(Env))	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
+		<store> N:Int|-> (_ =>I) </store>		 when notBool (X in keys(Env))	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
 		
 	//if/while stmt
 	rule if (true) A else _ => A
