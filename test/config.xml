@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<tests>
+
+  <include file="../../test/config.xml"
+           more-programs="."
+           more-results="." />
+
+</tests>
+
+
