@@ -17,7 +17,6 @@ costrutti appare l'attributo strict(1) in modo da valutare solo il primo argomen
 con la quale è possibile leggere un numero intero e valutarlo, e l'espressione print(a1,a2,...,an) la qualev
 valuta i suoi argomenti e dopo ritorna i suoi valori.
 
-
 \end{description}
 */
 

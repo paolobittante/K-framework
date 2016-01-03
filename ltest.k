@@ -1,7 +1,7 @@
 //Linguaggio esercizio 1
 
 module LTEST-SYNTAX
-	syntax AExp ::= Int | Id
+	syntax AExp ::= Int | Id 
 					| "read" "(" ")"
 					> AExp "/" AExp				[left,strict]
 					| AExp "*" AExp				[left,strict]
@@ -15,21 +15,24 @@ module LTEST-SYNTAX
 					| AExp "<" AExp				[seqstrict]
 					| AExp ">" AExp				[seqstrict]
 					| AExp "==" AExp			[seqstrict]
-					> "(" BExp ")" 				[bracket]	
+					| "(" BExp ")" 				[bracket]	
 					
 	syntax Block ::= "{" "}"
 					| "{" Stmts "}"	
 					
 	syntax Stmt ::= Block
-					| AExp ";"
+					| "int" Id "=" AExp ";"						[strict(2)]		//superflua basta int Ids ";" (verificare)
+					| "bool" Id "=" BExp ";"					[strict(2)]
+					| "int" Ids ";"							
+					| Id "=" AExp ";"							[strict(2)]
+					| Id "=" BExp ";"							[strict(2)]
 					| "if" "(" BExp ")" Block "else" Block		[strict(1)]
 					| "while" "(" BExp ")" Block				[strict(1)]
 					| "print" "(" AExps ")" ";"					[strict]
 					| "(" BExp "?" AExp ":" AExp ";)"			[strict(1)]		
-					| Id "=" AExp ";"							[strict(2)]
-					| Id "=" BExp ";"							[strict(2)]
-
+											
 	syntax AExps ::= List{AExp,","}				[strict]
+	syntax Ids ::= List{Id,","}
 	syntax Stmts ::= List{Stmt,""}				[seqstrict]
 endmodule
 
@@ -37,10 +40,7 @@ module LTEST
 	imports LTEST-SYNTAX
 	
 	syntax KResult ::= Int | Bool 
-	// Divido lo stato del programma in 'environment' e 'store'
-	// l'environment mapperà i nomi delle variabili alle rispettive locazioni,
-	// lo store mapperà locazioni ai valori.
-		
+			
 	configuration <T>
 					<k>  $PGM:Stmts </k>		//inizializzo la k cell con il programma passato a krun
 					<env> .Map </env>
@@ -52,7 +52,7 @@ module LTEST
 				</T>
 
 	//lookup rule
-	rule _:Int; => .
+	rule _:Int => .
 	rule .AExps => . 		[structural]
 	
 	rule <k> X:Id => I:Int ...</k> 
@@ -92,14 +92,23 @@ module LTEST
 		
 	// rules ripristino ambiente
 	// rule env(_) ~> env(Rho) => env(Rho) [structural]
-	 // quando raggiunge env(Rho) sostiuisce l'attuale ambiente con quello vecchio
+	// quando raggiunge env(Rho) sostiuisce l'attuale ambiente con quello vecchio
 	// rule <k> env(Rho) => . ...</k> <env> _ => Rho </env> 	[structural]
 		  
-	// assegnamento  
-	rule <k> X:Id =I:Int ; => I; ...</k>
-		<env> Env:Map => Env[N/X] </env>					//controllo che la variabile X non sia già nell'ambiente
-		<store> N:Int|-> (_ =>I) </store>		 when notBool (X in keys(Env))	//controlla che l'assegnamento del'valore sia dello stesso tipo del valore assegnato
+	// dichiarazione e assegnamento
+	rule <k>int X:Id =I:Int ; => I ...</k>
+		<env> Env:Map => Env[N/X] </env>					
+		<store> N:Int|-> (_ =>I) </store>		 when notBool (X in keys(Env))
 		
+	rule <k>bool X:Id =B:Bool ; => B ...</k>
+		<env> Env:Map => Env[N/X] </env>					
+		<store> N:Int|-> (_ =>B) </store>		 when notBool (X in keys(Env))
+		
+	//dichiarazione di una lista di identificatori
+	rule <k> int (X:Id,Xs:Ids => Xs);...</k>
+		<env> Env:Map => Env[N/X]</env>
+		<store> N:Int |-> (_ => 0) </store>		when notBool (X in keys(Env))
+	
 	//if/while stmt
 	rule if (true) A else _ => A
 	rule if (false) _ else A => A
