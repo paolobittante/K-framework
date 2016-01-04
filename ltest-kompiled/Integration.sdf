@@ -110,21 +110,11 @@ context-free priorities
     Int -> AExp {}
     Id -> AExp {}
 } > {
-    AExp "/" AExp -> AExp {left, cons("AExp1442Syn")}
-    AExp "*" AExp -> AExp {left, cons("AExp1443Syn")}
+    AExp "/" AExp -> AExp {cons("AExp1442Syn")}
+    AExp "*" AExp -> AExp {cons("AExp1443Syn")}
 } > {
-    AExp "+" AExp -> AExp {left, cons("AExp1444Syn")}
-    AExp "-" AExp -> AExp {left, cons("AExp1445Syn")}
-}
-
-context-free priorities
-{
-    Block -> Stmt {}
-} > {
-    Id "=" InsertDzAExp ";" -> Stmt {cons("Stmt1457Syn")}
-    Id "=" InsertDzBExp ";" -> Stmt {cons("Stmt1458Syn")}
-    "if" "(" InsertDzBExp ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1459Syn")}
-    "while" "(" InsertDzBExp ")" Block -> Stmt {cons("Stmt1460Syn")}
+    AExp "+" AExp -> AExp {cons("AExp1444Syn")}
+    AExp "-" AExp -> AExp {cons("AExp1445Syn")}
 }
 
 %% subsorts 1
@@ -376,6 +366,7 @@ context-free syntax
     KLabel "==KLabel" KLabel -> Bool {cons("Bool137Syn")}
     "freeVariables" "(" InsertDzSet ")" -> Set {cons("Set1335Syn")}
     "read" "(" ")" -> AExp {cons("AExp1440Syn")}
+    Id "=" InsertDzBExp ";" -> Stmt {cons("Stmt1458Syn")}
     "#stdin" -> Int {cons("Int1387Syn")}
     "SMTCall" "(" InsertDzString ")" -> String {cons("String1350Syn")}
     List "=/=List" List -> Bool {cons("Bool140Syn")}
@@ -403,6 +394,7 @@ context-free syntax
     "KLabel2KLabel" KLabel -> KLabel {cons("KLabel1292Syn")}
     "isLocalFreshVar" "(" InsertDzK ")" -> Bool {cons("Bool1323Syn")}
     DzInt -> Int {}
+    "while" "(" InsertDzBExp ")" Block -> Stmt {cons("Stmt1460Syn")}
     KList "=KList" KList -> Bool {cons("Bool147Syn")}
     "#isDigit" "(" InsertDzString ")" -> Bool {cons("Bool1239Syn")}
     "String2Bool" "(" InsertDzTCPAnswer ")" -> Bool {cons("Bool1386Syn")}
@@ -550,6 +542,7 @@ context-free syntax
     "#seek" "(" InsertDzInt "," InsertDzInt ")" -> K {cons("K1376Syn")}
     "rfindChar" "(" InsertDzString "," InsertDzString "," InsertDzInt ")" -> Int {cons("Int1204Syn")}
     "String2Bag" "(" InsertDzString ")" -> Bag {cons("Bag1396Syn")}
+    Block -> Stmt {}
     Set "==Set" Set -> Bool {cons("Bool128Syn")}
     DzString -> String {}
     "Float2String" "(" InsertDzFloat ")" -> String {cons("String1205Syn")}
@@ -588,10 +581,12 @@ context-free syntax
     "#freeVars" "(" InsertDzKList ")" -> K {cons("K1337Syn")}
     Int ">=Int" Int -> Bool {left, cons("Bool169Syn")}
     "Set2KTerm" "(" InsertDzSet ")" -> K {cons("K1288Syn")}
+    Id "=" InsertDzAExp ";" -> Stmt {cons("Stmt1457Syn")}
     "#open" "(" InsertDzString ")" -> KItem {cons("KItem1369Syn")}
     "categoryChar" "(" InsertDzString ")" -> String {cons("String1234Syn")}
     "#noparse" -> TCPError {cons("TCPError1247Syn")}
     Printable -> AExp {}
+    "if" "(" InsertDzBExp ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1459Syn")}
     "#parseInput" "(" InsertDzString "," InsertDzString ")" -> Stream {cons("Stream1ParseSyn")}
     Id "," Ids -> Ids {cons("Ids1ListSyn")}
     ".Ids" -> Ids {cons("Ids1Empty")}

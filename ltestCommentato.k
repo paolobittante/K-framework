@@ -1,7 +1,8 @@
 //Linguaggio esercizio 1
 
 /*@ \section{Introduzione}
-Questo è un linguaggio di prova definito con le caratteristiche elencate successivamente.
+Questo è un linguaggio di prova contenente i più basilari costrutti del linguaggio imperativo, 
+con le caratteristiche elencate successivamente.
 
 \begin{description}
 
@@ -22,12 +23,27 @@ valuta i suoi argomenti e dopo ritorna i suoi valori.
 
 
 module LTEST-SYNTAX
+
+/*@ \section{Sintassi}
+Con il k-framework in questo modulo viene definita la sintassi utilizzata dal linguaggio usando la notazione
+BNF (Backus-Naur Form), con l'espressioni terminali incluse fra apici e le non terminali con lettera maiuscola.
+In particolare il k-framework estende la notazione BNF con alcuni attributi e notazioni ispirate al SDF (Syntax 
+Definition Formalism) più alcuni elementi specifici di K.
+Descrizione di alcuni attributi che vengono usati:
+- lefteft;
+- strict; indica che tutti gli argomenti verranno valutati (in qualsiasi ordine)
+- strict(i); indica che verrà valutato solo l'argomento i-esimo
+- seqstrict; indica che gli argomenti verranno valutati in ordine sequenziale (sinistra a destra)
+- bracket;
+- 
+
+*/
 	syntax AExp ::= Int | Id
 					| "read" "(" ")"
-					> AExp "/" AExp				[left,strict]
-					| AExp "*" AExp				[left,strict]
-					> AExp "+" AExp				[left,strict]
-					| AExp "-" AExp				[left,strict] 
+					> AExp "/" AExp				[strict]
+					| AExp "*" AExp				[strict]
+					> AExp "+" AExp				[strict]
+					| AExp "-" AExp				[strict] 
 					| "(" AExp ")" 				[bracket]		
 					
 	syntax BExp ::= Bool
@@ -57,10 +73,14 @@ endmodule
 module LTEST
 	imports LTEST-SYNTAX
 	
+	/*@ \subsection{The old IMP constructs}
+	K distingue una categoria di termini, chiamata KResult, usata per indicare quali termini sono
+	da considerare valori o risultati.
+	*/		
 	syntax KResult ::= Int | Bool 
-	// Divido lo stato del programma in un 'environment' e uno 'store'
-	// l'environment mapperà i nomi delle variabili alle rispettive locazioni,
-	// lo store mapperà locazioni ai valori.
+	 /*Divido lo stato del programma in un 'environment' e uno 'store'
+	 l'environment mapperà i nomi delle variabili alle rispettive locazioni,
+	 lo store mapperà locazioni ai valori.*/
 		
 	configuration <T>
 					<k>  $PGM:Stmts </k>		//inizializzo la k cell con il programma passato a krun

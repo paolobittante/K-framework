@@ -10,55 +10,50 @@ context-free priorities
     Int -> AExp {}
     Id -> AExp {}
 } > {
-    AExp "/" AExp -> AExp {left, cons("AExp1442Syn")}
-    AExp "*" AExp -> AExp {left, cons("AExp1443Syn")}
+    AExp "/" AExp -> AExp {cons("AExp1442Syn")}
+    AExp "*" AExp -> AExp {cons("AExp1443Syn")}
 } > {
-    AExp "+" AExp -> AExp {left, cons("AExp1444Syn")}
-    AExp "-" AExp -> AExp {left, cons("AExp1445Syn")}
-}
-
-context-free priorities
-{
-    Block -> Stmt {}
-} > {
-    Id "=" InsertDzAExp ";" -> Stmt {cons("Stmt1457Syn")}
-    Id "=" InsertDzBExp ";" -> Stmt {cons("Stmt1458Syn")}
-    "if" "(" InsertDzBExp ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1459Syn")}
-    "while" "(" InsertDzBExp ")" Block -> Stmt {cons("Stmt1460Syn")}
+    AExp "+" AExp -> AExp {cons("AExp1444Syn")}
+    AExp "-" AExp -> AExp {cons("AExp1445Syn")}
 }
 
 context-free start-symbols
 DzString DzBool AExp AExps Stmts BExp String Int Stmt Float Bool Block Ids Id DzInt DzFloat K
 context-free syntax
     "int" InsertDzIds ";" -> Stmt {cons("Stmt1456Syn")}
-    DzFloat -> Float {}
-    "int" InsertDzId "=" InsertDzAExp ";" -> Stmt {cons("Stmt1454Syn")}
     "print" "(" InsertDzAExps ")" ";" -> Stmt {cons("Stmt1462Syn")}
-    AExp "<=" AExp -> BExp {cons("BExp1446Syn")}
     DzInt -> Int {}
     "(" InsertDzBExp "?" InsertDzAExp ":" InsertDzAExp ";)" -> Stmt {cons("Stmt1463Syn")}
-    DzString -> String {}
-    "{" InsertDzStmts "}" -> Block {cons("Block1453Syn")}
+    "while" "(" InsertDzBExp ")" Block -> Stmt {cons("Stmt1460Syn")}
     {AExp ","}* -> AExps {cons("AExps1ListSyn")}
-    AExp ">" AExp -> BExp {cons("BExp1449Syn")}
-    AExp ">=" AExp -> BExp {cons("BExp1447Syn")}
     AExp "==" AExp -> BExp {cons("BExp1450Syn")}
     "read" "(" ")" -> AExp {cons("AExp1440Syn")}
+    Id "=" InsertDzBExp ";" -> Stmt {cons("Stmt1458Syn")}
+    DzBool -> Bool {}
+    {Stmt ""}* -> Stmts {cons("Stmts1ListSyn")}
+    DzFloat -> Float {}
+    "int" InsertDzId "=" InsertDzAExp ";" -> Stmt {cons("Stmt1454Syn")}
+    AExp "<=" AExp -> BExp {cons("BExp1446Syn")}
+    Block -> Stmt {}
+    DzString -> String {}
+    "{" InsertDzStmts "}" -> Block {cons("Block1453Syn")}
+    AExp ">" AExp -> BExp {cons("BExp1449Syn")}
+    AExp ">=" AExp -> BExp {cons("BExp1447Syn")}
     "{" "}" -> Block {cons("Block1452Syn")}
+    Id "=" InsertDzAExp ";" -> Stmt {cons("Stmt1457Syn")}
     AExp "<" AExp -> BExp {cons("BExp1448Syn")}
     "(" InsertDzAExp ")" -> AExp {cons("AExp1Bracket")}
     "bool" InsertDzId "=" InsertDzBExp ";" -> Stmt {cons("Stmt1455Syn")}
     "(" InsertDzBExp ")" -> BExp {cons("BExp1Bracket")}
-    DzBool -> Bool {}
     Bool -> BExp {}
-    {Stmt ""}* -> Stmts {cons("Stmts1ListSyn")}
+    "if" "(" InsertDzBExp ")" InsertDzBlock "else" Block -> Stmt {cons("Stmt1459Syn")}
     {Id ","}* -> Ids {cons("Ids1ListSyn")}
-    AExp -> InsertDzAExp
     AExps -> InsertDzAExps
+    AExp -> InsertDzAExp
     Stmts -> InsertDzStmts
     BExp -> InsertDzBExp
-    Block -> InsertDzBlock
     Ids -> InsertDzIds
+    Block -> InsertDzBlock
     Id -> InsertDzId
 
 

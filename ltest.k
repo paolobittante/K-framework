@@ -3,10 +3,10 @@
 module LTEST-SYNTAX
 	syntax AExp ::= Int | Id 
 					| "read" "(" ")"
-					> AExp "/" AExp				[left,strict]
-					| AExp "*" AExp				[left,strict]
-					> AExp "+" AExp				[left,strict]
-					| AExp "-" AExp				[left,strict] 
+					> AExp "/" AExp				[strict]
+					| AExp "*" AExp				[strict]
+					> AExp "+" AExp				[strict]
+					| AExp "-" AExp				[strict] 
 					| "(" AExp ")" 				[bracket]		
 					
 	syntax BExp ::= Bool
