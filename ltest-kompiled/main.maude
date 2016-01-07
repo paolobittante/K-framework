@@ -1,4 +1,4 @@
-load "/cygdrive/C/Program Files/k3-4/lib/maude/lib/k-prelude"
+load "/cygdrive/C/k-3.4/lib/maude/lib/k-prelude"
 load "base.maude"
 load "builtins.maude"
 mod LTEST is 
