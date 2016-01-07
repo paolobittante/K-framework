@@ -1,0 +1,15 @@
+Maude> rewrites: 0 in 540622194550ms cpu (0ms real) (0 rewrites/second)
+result #Int: setCounter(0)
+rewrites: 462 in -547141292998ms cpu (6ms real) (~ rewrites/second)
+result BagItem: 
+< generatedTop > 
+ < T > 
+  < k > #token("Id", "x")(.KList) ~> #freezer '_==_(HOLE,,# 5(.KList))(.KList) ~> #freezer 'if`(_`)_else_(HOLE,,'`{_`}('_=_;(#token("Id", "x")(.KList),,# 3(.KList))),,'`{_`}('_=_;(#token("Id", "x")(.KList),,# 5(.KList))))(.KList) </ k > 
+  < stream > 
+   < in > .List </ in > 
+   < out > .List </ out > </ stream > 
+  < store > #symInt(# 1(.KList)) |-> # 2(.KList) #symInt(# 2(.KList)) |-> # true(.KList) </ store > 
+  < env > #token("Id", "x")(.KList) |-> #symInt(# 1(.KList)) #token("Id", "y")(.KList) |-> #symInt(# 2(.KList)) </ env > </ T > </ generatedTop >
+rewrites: 6 in 534737067910ms cpu (0ms real) (0 rewrites/second)
+result #NzNat: 3
+Maude> Bye.

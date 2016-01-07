@@ -1,0 +1,6 @@
+int x=5;
+x=2;
+bool y=true;
+
+{int x=99;}
+x=10;

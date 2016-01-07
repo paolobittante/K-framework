@@ -36,49 +36,32 @@ Descrizione di alcuni attributi che vengono usati:
 - 
 
 */
-	syntax AExp ::= Int | Id 
-					| "(" AExp ")" 				[bracket]	
+	syntax Exp ::= Int | Id | Bool
+					| "(" Exp ")" 				[bracket]
 					| "read" "(" ")"
-					> AExp "/" AExp				[strict]
-					| AExp "*" AExp				[strict]
-					> AExp "+" AExp				[strict]
-					| AExp "-" AExp				[strict] 						
-					
-	syntax BExp ::= Bool
-					| "(" BExp ")" 				[bracket]
-					| AExp "<=" AExp			[strict]
-					| AExp ">=" AExp			[strict]
-					| AExp "<" AExp				[strict]
-					| AExp ">" AExp				[strict]
-					| AExp "==" AExp			[strict]
-						
-					
+					> Exp "/" Exp				[strict]
+					| Exp "*" Exp				[strict]
+					> Exp "+" Exp				[strict]
+					| Exp "-" Exp				[strict] 
+					> Exp "<=" Exp				[seqstrict]
+					| Exp ">=" Exp				[seqstrict]
+					| Exp "<" Exp				[seqstrict]
+					| Exp ">" Exp				[seqstrict]
+					| Exp "==" Exp				[seqstrict]		
+					> Exp "=" Exp				[strict(2)]
+										
 	syntax Block ::= "{" "}"
 					| "{" Stmts "}"	
 					
 	syntax Stmt ::= Block
-					| AExp ";"									[strict]
-					| BExp ";"									[strict]
-					| "int" Id "=" AExp ";"						[strict(2)]		//superflua basta int Ids ";" (verificare)
-					| "bool" Id "=" BExp ";"					[strict(2)]
-					| "int" Ids ";"
-					| "bool" Ids ";"					
-					| Id "=" AExp ";"							[strict(2)]
-					| Id "=" BExp ";"							[strict(2)]
-					> "if" "(" BExp ")" Block					[strict(1)]
-					| "if" "(" BExp ")" Block "else" Block		[strict(1)]
-					| "while" "(" BExp ")" Block				[strict(1)]
+					| "if" "(" Exp ")" Block "else" Block		[strict(1)]
+					| "while" "(" Exp ")" Block				[strict(1)]
 					| "print" "(" AExps ")" ";"					[strict]
-					|  BExp "?" Block ":" Block ";"				[strict(1)]		
+					| "(" Exp "?" Exp ":" Exp ";)"			[strict(1)]		
 											
-	syntax AExps ::= List{AExp,","}								[strict]
+	syntax AExps ::= List{Exp,","}				[strict]
 	syntax Ids ::= List{Id,","}
-	// syntax Stmts ::= List{Stmt,""}							[seqstrict]
-	
-	syntax Stmts ::= Stmt
-					| Stmts Stmts								[right]
-					
-	rule if (E) S => if (E) S else {}							[macro]
+	syntax Stmts ::= List{Stmt,""}				[seqstrict]
 endmodule
 
 module LTEST
@@ -101,10 +84,14 @@ module LTEST
 						<out> .List </out>
 					</stream>
 				</T>
-				
+
+	
+	rule _:Int => .
+	rule .AExps => . 		[structural]
+	
 	//@ \subsubsection{Variable lookup}
 	rule <k> X:Id => I:Int ...</k> 
-		<env>... X |-> N:Int ...</env> 
+		<env>... X |-> N:Nat ...</env> 
 		<store> ... N|-> I ...</store>	  
 		
 	//@ \subsubsection{Read} 
@@ -113,7 +100,7 @@ module LTEST
 		
 	//@ \subsubsection{Output} 	
 	syntax Printable ::= Int | String
-	syntax AExp ::= Printable
+	syntax Exp ::= Printable
 	rule <k> print(PExp:Printable,ListExp => ListExp); ...</k>
        <out>... .List => ListItem(PExp) </out>  
 	rule print(.AExps); => .  						[structural]
@@ -136,53 +123,53 @@ module LTEST
 	/*@ \subsubsection{Block }
 	 I blocchi vuoti sono semplicemente ignorati
 	 */
-	syntax K ::= env(Map)
-	rule {} => .
+	rule {} => . 		
+	
 	// per i blocchi non vuoti deve essere certo il ripristino dell'ambiente
 	// dopo l'esecuzione dei comandi in esso contenuti. In questo modo possiamo definire 
 	// variabili locali, dove il loro 'scope' è il block che le contiene
-		
+	// rule <k> {S:Stmt} => S ~> env(Rho:Map) ...</k> <env> Rho </env> [structural]
+	
 	//@ \subsubsection{Composizione sequenziale }
 	rule S1:Stmts S2:Stmts  => S1 ~> S2		[structural]
 		
 	// rules ripristino ambiente
-	 // rule env(_) ~> env(Rho) => env(Rho) 								[structural]
+	// rule env(_) ~> env(Rho) => env(Rho) [structural]
 	// quando raggiunge env(Rho) sostiuisce l'attuale ambiente con quello vecchio
-	 rule <k> {S:Stmts} => S ~> env(Rho:Map) ...</k> <env> Rho </env> 	[structural]
-	 rule <k> env(Rho:Map) => . ...</k> <env> _ => Rho </env> 				[structural]
+	// rule <k> env(Rho) => . ...</k> <env> _ => Rho </env> 	[structural]
 		  
 	// dichiarazione e assegnamento
-	rule _:Int ; => .				[structural]
-	rule _:Bool ; => .				[structural]
-	rule .AExps => . 				[structural]
-	rule int .Ids ; => .			[structural]
-	rule bool .Ids ; => .			[structural]
+	rule int .Ids ; => .
 	
 	rule int X:Id = I:Int ; => int X ; X = I;			[structural]
 	rule bool X:Id = I:Bool ; => bool X ; X = I;		[structural]
 	
 	rule <k> int (X:Id,Xs:Ids => Xs);...</k>
 		<env> Env:Map => Env[N/X]</env>
-		<store> ... . => (N |-> 0) ... </store>			when fresh(N:Int)  
+		<store> ... . => (N |-> 0) </store>		when fresh(N:Int) andBool notBool (X in keys(Env)) 
 		
 	rule <k> bool (X:Id,Xs:Ids => Xs);...</k>
 		<env> Env:Map => Env[N/X]</env>
-		<store> ... . => (N |-> false) ... </store>		when fresh(N:Int) 
+		<store> ... . => (N |-> false) </store>		when fresh(N:Int) andBool notBool (X in keys(Env)) 
 	
-	rule <k> X:Id = I:Int ; => I ;...</k>
-		<env> ... X |-> N ... </env>					
-		<store> ... N:Int|-> (_:Int =>I) ... </store>		
+	rule <k> X:Id =I:Int ; => I ...</k>
+		<env> Env:Map => Env[N/X] </env>					
+		<store> N:Int|-> (_ =>I) </store>		 
 		
-	rule <k> X:Id = B:Bool ; => B ; ...</k>
-		<env> ... X |-> N ... </env>					
-		<store> ... N:Int|-> (_:Bool =>B)  ...</store>
+	rule <k> X:Id =B:Bool ; => B ...</k>
+		<env> Env:Map => Env[N/X] </env>					
+		<store> N:Int|-> (_ =>B) </store>		 
 		
+	
+		
+	
+	
 	//if/while stmt
 	rule if (true) A else _ => A
 	rule if (false) _ else A => A
 	rule while (B) A => if (B) {A while (B) A} else {} 		[structural]
-	rule (true) ? S : _ ; => S
-	rule (false) ? _ : S ; => S
+	rule ((true) ? S : _ ;) => S
+	rule ((false) ? _ : S ;) => S
 			
 endmodule
 
